@@ -3,17 +3,17 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Why's Blog
-subtitle: '踩坑日常'
+title: '布丁日常'
+subtitle: '布丁踩坑日常'
 description: '记录日常开发问题'
 keywords:
 author: HuaiYv Wang
-language: zh-CN
+language: en
 timezone: 'Asia/Shanghai'
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
-url: http://example.com
+url: https://xiaoyv.top
 permalink: :year/:month/:day/:title/
 permalink_defaults:
 pretty_urls:
