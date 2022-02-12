@@ -1,1 +1,1 @@
-git add . & git commit -a -m "update"  & git push & cmd.exe
+git add . & git commit -a -m "update"  & git push & pause
