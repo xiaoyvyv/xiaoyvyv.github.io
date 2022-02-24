@@ -1,7 +1,9 @@
 ---
 title: 在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库
 date: 2022-02-11 14:46:30
-tags: android | linux
+tags: 
+- android
+- linux
 ---
 ### 在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库
 
