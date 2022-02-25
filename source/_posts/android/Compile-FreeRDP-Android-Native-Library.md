@@ -126,7 +126,13 @@ tags:
    进入克隆下来的 FreeRDP 目录，输入以下命令开始编译
 
    ```shell
-   ./scripts/android-build-freerdp.sh --ndk $ANDROID_NDK --sdk $ANDROID_SDK
+   ./scripts/android-build-freerdp.sh --ndk $ANDROID_NDK --sdk $ANDROID_SDK --release
+   ```
+
+   若需要编译 H264，修改 `android-build-release.conf` 开启 H264 `WITH_OPENH264=1`
+
+   ```sh
+   ./scripts/android-build-freerdp.sh --ndk $ANDROID_NDK --sdk $ANDROID_SDK --openh264-ndk $ANDROID_NDK_15C --openh264 --release
    ```
 
    等待编译完成，若前面的步骤有错误，期间可能会编译报错，看错误提示解决后，重新执行上面的编译命令即可。
