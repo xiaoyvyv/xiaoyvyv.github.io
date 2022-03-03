@@ -68,7 +68,13 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  - Develop: develop 
+  - Bum: bum
+  - Knowledge: knowledge
 tag_map:
+  - Android: android
+  - Java: java
+  - Linux: linux
 
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
