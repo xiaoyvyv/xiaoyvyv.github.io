@@ -1,10 +1,7 @@
 ---
 title: VM 虚拟机设置 Windows 共享文件夹
 date: 2022-02-11 14:46:30
-tags: 
-- android
-- ubuntu
-- share
+tags: [linux, vm-ware, ubuntu, share-dir]
 ---
 
 ### VM 虚拟机设置共享文件夹

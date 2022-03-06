@@ -1,7 +1,7 @@
 ---
 title: Ubuntu 设置开机 Root 用户登录
 date: 2022-02-11 14:46:30
-tags: linux
+tags: [linux, root, ubuntu]
 ---
 
 ### Ubuntu 设置开机 Root 用户登录

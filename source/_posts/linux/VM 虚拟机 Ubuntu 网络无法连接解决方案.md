@@ -1,7 +1,7 @@
 ---
 title: VM 虚拟机 Ubuntu 无法连接到网络，解决方案 
 date: 2022-02-11 14:46:30
-tags: linux
+tags: [linux, vm-ware, ubuntu]
 ---
 
 ### VM 虚拟机 Ubuntu 无法连接到网络，解决方案
