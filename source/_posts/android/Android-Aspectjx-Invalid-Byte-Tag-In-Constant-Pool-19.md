@@ -1,9 +1,7 @@
 ---
 title: Androis Studio 引入 AspectJx 报错：Invalid byte tag in constant pool 19 解决方案
 date: 2022-02-11 14:46:30
-tags: 
-- android
-- aspectjx
+tags: [android, aspectjx]
 ---
 
 ### Androis Studio 引入 AspectJx 报错：Invalid byte tag in constant pool 19 (Zip file is empty) 解决方案

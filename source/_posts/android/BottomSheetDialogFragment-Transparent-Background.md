@@ -1,7 +1,7 @@
 ---
 title: BottomSheetDialogFragment 去除白色背景，设置透明背景
 date: 2022-02-11 14:46:30
-tags: android
+tags: [android]
 ---
 ### BottomSheetDialogFragment 去除白色背景，设置透明背景
 
