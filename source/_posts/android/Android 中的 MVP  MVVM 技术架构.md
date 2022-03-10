@@ -10,7 +10,7 @@ tags: [mvp, mvvm]
 
 全称：`Model-View-Presenter` ；`MVP` 是从经典的模式 `MVC` 演变而来，它们的基本思想有相通的地方 `Controller` / `Presenter` 负责逻辑的处理，`Model` 提供数据，`View` 负责显示。
 
-![](https://upload-images.jianshu.io/upload_images/15226743-947a7c01f8199148.png?imageMogr2/auto-orient/strip|imageView2/2/format/webp)
+![](./img/android/mvp.webp)
 
 #### 优点
 
@@ -32,7 +32,7 @@ tags: [mvp, mvvm]
 
 其中的 `VM` 是 `ViewModel` 的缩写，`ViewModel` 可以理解成是 `View` 的数据模型和 `Presenter` 的合体，`ViewModel` 和 `View` 之间的交互通过 `DataBinding`完成，而 `DataBinding` 可以实现双向的交互，这就使得视图和控制层之间的耦合程度进一步降低，关注点分离更为彻底，同时减轻了 `Activity` 的压力。
 
-![](https://upload-images.jianshu.io/upload_images/15226743-1b2adc4a66e12c6e.png?imageMogr2/auto-orient/strip|imageView2/2/w/715/format/webp)
+![](./img/android/mvvm.webp)
 
 #### 优点
 
