@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Android 中的 MVP | MVVM 技术架构 | 布丁日常</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Android 中的 MVP | MVVM 技术架构1、MVP全称：Model-View-Presenter ；MVP 是从经典的模式 MVC 演变而来，它们的基本思想有相通的地方 Controller &#x2F; Presenter 负责逻辑的处理，Model 提供数据，View 负责显示。  优点 模型与视图完全分离，我们可以修改视图而不影响模型  可以更高效地使用模型，因为所有的交互都发生">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 中的 MVP | MVVM 技术架构">
+<meta property="og:url" content="https://xiaoyvyv.github.io/2022/03/10/10/45/1fa028347e33/index.html">
+<meta property="og:site_name" content="布丁日常">
+<meta property="og:description" content="Android 中的 MVP | MVVM 技术架构1、MVP全称：Model-View-Presenter ；MVP 是从经典的模式 MVC 演变而来，它们的基本思想有相通的地方 Controller &#x2F; Presenter 负责逻辑的处理，Model 提供数据，View 负责显示。  优点 模型与视图完全分离，我们可以修改视图而不影响模型  可以更高效地使用模型，因为所有的交互都发生">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://xiaoyvyv.github.io/img/android/mvp.webp">
+<meta property="og:image" content="https://xiaoyvyv.github.io/img/android/mvvm.webp">
+<meta property="article:published_time" content="2022-03-10T02:45:18.000Z">
+<meta property="article:modified_time" content="2022-03-10T03:17:23.362Z">
+<meta property="article:author" content="HuaiYv Wang">
+<meta property="article:tag" content="mvp">
+<meta property="article:tag" content="mvvm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoyvyv.github.io/img/android/mvp.webp">
+  
+    <link rel="alternate" href="/atom.xml" title="布丁日常" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">布丁日常</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">布丁踩坑日常</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xiaoyvyv.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-android/Android 中的 MVP  MVVM 技术架构" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/03/10/10/45/1fa028347e33/" class="article-date">
+  <time class="dt-published" datetime="2022-03-10T02:45:18.000Z" itemprop="datePublished">2022-03-10</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Android 中的 MVP | MVVM 技术架构
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Android-中的-MVP-MVVM-技术架构"><a href="#Android-中的-MVP-MVVM-技术架构" class="headerlink" title="Android 中的 MVP | MVVM 技术架构"></a>Android 中的 MVP | MVVM 技术架构</h3><h3 id="1、MVP"><a href="#1、MVP" class="headerlink" title="1、MVP"></a>1、MVP</h3><p>全称：<code>Model-View-Presenter</code> ；<code>MVP</code> 是从经典的模式 <code>MVC</code> 演变而来，它们的基本思想有相通的地方 <code>Controller</code> &#x2F; <code>Presenter</code> 负责逻辑的处理，<code>Model</code> 提供数据，<code>View</code> 负责显示。</p>
+<p><img src="/./img/android/mvp.webp"></p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ol>
+<li><p>模型与视图完全分离，我们可以修改视图而不影响模型</p>
+</li>
+<li><p>可以更高效地使用模型，因为所有的交互都发生在一个地方——Presenter内部</p>
+</li>
+<li><p>我们可以将一个Presenter用于多个视图，而不需要改变Presenter的逻辑。这个特性非常的有用，因为视图的变化总是比模型的变化频繁。</p>
+</li>
+<li><p>如果我们把逻辑放在Presenter中，那么我们就可以脱离用户接口来测试这些逻辑（单元测试）</p>
+</li>
+</ol>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><p>由于对视图的渲染放在了 <code>Presenter</code> 中，所以视图和 <code>Presenter</code> 的交互会过于频繁。还有一点需要明白，如果 <code>Presenter</code> 过多地渲染了视图，往往会使得它与特定的视图的联系过于紧密。一旦视图需要变更，那么 <code>Presenter</code> 也需要变更了。</p>
+<h3 id="2、MVVM"><a href="#2、MVVM" class="headerlink" title="2、MVVM"></a>2、MVVM</h3><p><code>MVVM</code> 是 <code>Model-View-ViewModel</code> 的简写。它本质上就是 <code>MVP</code> 的改进版。<code>MVVM</code> 模式将 <code>Presenter</code> 改名为 <code>ViewModel</code>，基本上与 <code>MVP</code> 模式完全一致。唯一的区别是，它采用双向绑定（DataBinding），View的变动，自动反映在 ViewModel，反之亦然。</p>
+<p>其中的 <code>VM</code> 是 <code>ViewModel</code> 的缩写，<code>ViewModel</code> 可以理解成是 <code>View</code> 的数据模型和 <code>Presenter</code> 的合体，<code>ViewModel</code> 和 <code>View</code> 之间的交互通过 <code>DataBinding</code>完成，而 <code>DataBinding</code> 可以实现双向的交互，这就使得视图和控制层之间的耦合程度进一步降低，关注点分离更为彻底，同时减轻了 <code>Activity</code> 的压力。</p>
+<p><img src="/./img/android/mvvm.webp"></p>
+<h4 id="优点-1"><a href="#优点-1" class="headerlink" title="优点"></a>优点</h4><ol>
+<li>双向绑定技术，当 <code>Model</code> 变化时，<code>View-Model</code> 会自动更新，<code>View</code> 也会自动变化。很好做到数据的一致性，不用担心，在模块的这一块数据是这个值，在另一块就是另一个值了。所以 <code>MVVM</code> 模式有些时候又被称作：<code>model-view-binder</code> 模式。</li>
+<li><code>View</code> 的功能进一步的强化，具有控制的部分功能，若想无限增强它的功能，甚至控制器的全部功几乎都可以迁移到各个 <code>View</code> 上（不过这样不可取，那样 <code>View</code> 干了不属于它职责范围的事情）。<code>View</code> 可以像控制器一样具有自己的 <code>View-Model</code>。</li>
+<li>由于控制器的功能大都移动到 <code>View</code> 上处理，大大的对控制器进行了瘦身。不用再为看到庞大的控制器逻辑而发愁了。</li>
+<li>可以对 <code>View</code> 或 <code>ViewController</code> 的数据处理部分抽象出来一个函数处理 <code>model</code>。这样它们专职页面布局和页面跳转，它们必然更一步的简化。</li>
+</ol>
+<h4 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h4><ol>
+<li>数据绑定使得 <code>Bug</code> 很难被调试。你看到界面异常了，有可能是你 <code>View</code> 的代码有 <code>Bug</code>，也可能是 <code>Model</code> 的代码有问题。数据绑定使得一个位置的 <code>Bug</code> 被快速传递到别的位置，要定位原始出问题的地方就变得不那么容易了。</li>
+<li>一个大的模块中，<code>model</code> 也会很大，虽然使用方便了也很容易保证了数据的一致性，当时长期持有，不释放内存，就造成了花费更多的内存。</li>
+<li>数据双向绑定不利于代码重用。客户端开发最常用的重用是 <code>View</code>，但是数据双向绑定技术，让你在一个 <code>View</code> 都绑定了一个 <code>model</code> ，不同模块的 <code>model</code> 都不同。那就不能简单重用 <code>View</code> 了。</li>
+</ol>
+<p>个人觉得 <code>MVVM</code> 有点像 <code>H5</code> 的 <code>Vue</code> 框架，微信小程序开发也是这种模式。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xiaoyvyv.github.io/2022/03/10/10/45/1fa028347e33/" data-id="cl25jvgnx00078wv9b726be9n" data-title="Android 中的 MVP | MVVM 技术架构" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mvp/" rel="tag">mvp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mvvm/" rel="tag">mvvm</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/03/10/11/34/4e0f3bcf987e/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android Apk大小优化常用方案整理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/03/10/10/11/c4ecd1f88478/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">常见的设计模式</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/" rel="tag">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apk/" rel="tag">apk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aspectjx/" rel="tag">aspectjx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html/" rel="tag">html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/" rel="tag">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvvm/" rel="tag">mvvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/" rel="tag">optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/root/" rel="tag">root</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/share-dir/" rel="tag">share-dir</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-ware/" rel="tag">vm-ware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yangtzeu/" rel="tag">yangtzeu</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/androidstudio/" style="font-size: 10px;">androidstudio</a> <a href="/tags/apk/" style="font-size: 10px;">apk</a> <a href="/tags/aspectjx/" style="font-size: 10px;">aspectjx</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/gradle/" style="font-size: 12.5px;">gradle</a> <a href="/tags/html/" style="font-size: 10px;">html</a> <a href="/tags/java/" style="font-size: 12.5px;">java</a> <a href="/tags/linux/" style="font-size: 17.5px;">linux</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 10px;">mvvm</a> <a href="/tags/optimization/" style="font-size: 10px;">optimization</a> <a href="/tags/root/" style="font-size: 10px;">root</a> <a href="/tags/share-dir/" style="font-size: 10px;">share-dir</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/vm-ware/" style="font-size: 12.5px;">vm-ware</a> <a href="/tags/yangtzeu/" style="font-size: 10px;">yangtzeu</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/04/10/11/34/7820a0788829/">Android  Html.from() 末尾大量空白去除</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/11/34/4e0f3bcf987e/">Android Apk大小优化常用方案整理</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/45/1fa028347e33/">Android 中的 MVP | MVVM 技术架构</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/11/c4ecd1f88478/">常见的设计模式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/06/22/36/796735fab11e/">Android 启动优化常用方案整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 HuaiYv Wang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

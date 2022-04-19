@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库 | 布丁日常</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库需要用到的环境和软件：  Java make    (Ubuntu 自带，没有需要安装) git    (自行安装) python3    (Ubuntu 自带，没有需要安装) Android Studio cmake    (使用Adnroid Studio 下载) Android Sdk    (使用Adnroid">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库">
+<meta property="og:url" content="https://xiaoyvyv.github.io/2022/02/11/14/46/bdd6a5bf8108/index.html">
+<meta property="og:site_name" content="布丁日常">
+<meta property="og:description" content="在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库需要用到的环境和软件：  Java make    (Ubuntu 自带，没有需要安装) git    (自行安装) python3    (Ubuntu 自带，没有需要安装) Android Studio cmake    (使用Adnroid Studio 下载) Android Sdk    (使用Adnroid">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-02-11T06:46:30.000Z">
+<meta property="article:modified_time" content="2022-03-10T02:09:22.350Z">
+<meta property="article:author" content="HuaiYv Wang">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="布丁日常" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">布丁日常</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">布丁踩坑日常</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xiaoyvyv.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-android/编译 FreeRDP Android 二进制 so 库" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/02/11/14/46/bdd6a5bf8108/" class="article-date">
+  <time class="dt-published" datetime="2022-02-11T06:46:30.000Z" itemprop="datePublished">2022-02-11</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="在-Ubuntu-上编译-FreeRDP-Android-端的二进制-so-库"><a href="#在-Ubuntu-上编译-FreeRDP-Android-端的二进制-so-库" class="headerlink" title="在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库"></a>在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库</h3><p>需要用到的环境和软件：</p>
+<ul>
+<li>Java</li>
+<li>make    (Ubuntu 自带，没有需要安装)</li>
+<li>git    (自行安装)</li>
+<li>python3    (Ubuntu 自带，没有需要安装)</li>
+<li>Android Studio</li>
+<li>cmake    (使用Adnroid Studio 下载)</li>
+<li>Android Sdk    (使用Adnroid Studio 下载)</li>
+<li>Android Ndk    (使用Adnroid Studio 下载)</li>
+</ul>
+<h4 id="1、安装-Jdk17"><a href="#1、安装-Jdk17" class="headerlink" title="1、安装 Jdk17"></a>1、安装 Jdk17</h4><ol>
+<li><p>下载官方 Jdk17 文件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mkdir /usr/local/java/jdk17</span><br><span class="line">wget https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz -P /usr/local/java/jdk17</span><br><span class="line">或</span><br><span class="line">wget http://49.232.8.65/jdk/jdk17/jdk-17_linux-x64_bin.tar.gz -P /usr/local/java/jdk17</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>解压</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar xf /home/jdk17/jdk-17_linux-x64_bin.tar.gz -C /usr/local/java/jdk17</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置环境变量</p>
+<p><code>gedit /etc/profile</code> ，在文件最下方添加以下内容：</p>
+<blockquote>
+<p>后面的版本号根据你自己解压下来的 Jdk 文件夹版本名称而定</p>
+</blockquote>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># JAVA</span></span><br><span class="line">export <span class="attr">JAVA_HOME</span>=/usr/local/java/jdk17/jdk-<span class="number">17.0</span>.<span class="number">1</span></span><br><span class="line">export <span class="attr">PATH</span>=<span class="variable">$JAVA_HOME</span>/bin:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h4 id="2、安装-Android-Studio"><a href="#2、安装-Android-Studio" class="headerlink" title="2、安装 Android Studio"></a>2、安装 Android Studio</h4><ol>
+<li><p>下载最新版本的 Android Studio，下载完成后解压到你想要的目录即可。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://redirector.gvt1.com/edgedl/android/studio/ide-zips/2021.1.1.21/android-studio-2021.1.1.21-linux.tar.gz</span><br></pre></td></tr></table></figure>
+
+<p>我这里解压后，将解压出来的 <code>android-studio</code> 目录放到了 <code>/usr/local/</code> 目录下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/usr/local/android-studio</span><br></pre></td></tr></table></figure>
+
+<p>进入 <code>android-studio/bin</code> 目录，执行 <code>./studio.sh</code> 启动软件。</p>
+</li>
+<li><p>启动成功后，配置完成，记录下你配置的 SDK 目录，建议一路配置都用默认即可</p>
+<p>我这里的 SDK 目录默认为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/root/Android/Sdk</span><br></pre></td></tr></table></figure>
+
+<p>然后进入新建项目的界面，我们不用新建项目，点击左侧的 <code>Customize -&gt; All settings</code> ，在设置搜索框里输入 <code>SDK</code> 按回车键。</p>
+<p>然后点开 <code>Android SDK</code> 的配置页面：选中 <code>SDK Tools</code> Tab，勾选中 <code>NDK (Size by side)</code> 和 <code>cmake</code> ，然后点击 <code>Apply</code>，等待下载完成关闭 Android Studio。</p>
+</li>
+<li><p>然后进入 SDK 目录，你会发现 <code>cmake</code> 和 <code>ndk</code> 都在该目录内。</p>
+<blockquote>
+<p>注意：</p>
+<p>cmake 目录下没有直接放相关文件，而是多了一层版本号的文件夹，这里需要修改一下，将版本号文件夹内的全部文件复制一份到上一级目录下，免得后面执行编译脚本报错。</p>
+</blockquote>
+<p><code>cmake</code> 路径修改，<code>$SDK/cmake/3.18.1/xxxxx -&gt; $SDK/cmake/xxxxx</code> </p>
+</li>
+<li><p>添加环境变量</p>
+<p><code>gedit /etc/profile</code> ，在文件最下方添加以下内容：</p>
+<blockquote>
+<p>版本号和你的有差异请自己替换</p>
+</blockquote>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ANDROID_SDK</span></span><br><span class="line">export <span class="attr">ANDROID_SDK</span>=/root/Android/Sdk</span><br><span class="line">export <span class="attr">PATH</span>=<span class="variable">$ANDROID_SDK</span>/tools:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ANDROID_NDK</span></span><br><span class="line">export <span class="attr">ANDROID_NDK</span>=<span class="variable">$ANDROID_SDK</span>/ndk/<span class="number">23.1</span>.<span class="number">7779620</span></span><br><span class="line">export <span class="attr">PATH</span>=<span class="variable">$ANDROID_NDK</span>:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># ANDROID_CMAKE</span></span><br><span class="line">export <span class="attr">ANDROID_CMAKE</span>=<span class="variable">$ANDROID_SDK</span>/cmake/bin:<span class="variable">$PATH</span></span><br><span class="line">export <span class="attr">PATH</span>=<span class="variable">$ANDROID_CMAKE</span>:<span class="variable">$PATH</span></span><br></pre></td></tr></table></figure>
+
+<p>然后刷新配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source /etc/profile</span><br></pre></td></tr></table></figure>
+
+<p>此时可以输入：<code>java -version</code> 、<code>cmake</code> 、 <code>ndk-build</code> 进行检测是否配置好</p>
+</li>
+</ol>
+<h4 id="3、下载-FreeRdp"><a href="#3、下载-FreeRdp" class="headerlink" title="3、下载 FreeRdp"></a>3、下载 FreeRdp</h4><ol>
+<li><p>在 <code>/root</code> 目录新建一个文件夹 <code>Work</code>，进入该文件夹：</p>
+</li>
+<li><p>下载 Github 源码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/FreeRDP/FreeRDP.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>开始编译</p>
+<p>进入克隆下来的 FreeRDP 目录，输入以下命令开始编译</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./scripts/android-build-freerdp.sh --ndk $ANDROID_NDK --sdk $ANDROID_SDK --release</span><br></pre></td></tr></table></figure>
+
+<p>若需要编译 H264，修改 <code>android-build-release.conf</code> 开启 H264 <code>WITH_OPENH264=1</code></p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./scripts/android-build-freerdp.sh --ndk <span class="variable">$ANDROID_NDK</span> --sdk <span class="variable">$ANDROID_SDK</span> --openh264-ndk <span class="variable">$ANDROID_NDK_15C</span> --openh264 --release</span><br></pre></td></tr></table></figure>
+
+<p>等待编译完成，若前面的步骤有错误，期间可能会编译报错，看错误提示解决后，重新执行上面的编译命令即可。</p>
+</li>
+<li><p>查看编译好的 so 文件</p>
+<p>编译完成后，so 存放目录为：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/root/Work/FreeRDP/client/Android/Studio/freeRDPCore/src/main/jniLibs</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="4、到此编译完成"><a href="#4、到此编译完成" class="headerlink" title="4、到此编译完成"></a>4、到此编译完成</h3><p>剩下的就是把这个导出来，放到 Android Studio 相关的项目里就行了，具体相关的源码可以访问 FreeRDP Github 地址：<a target="_blank" rel="noopener" href="https://github.com/FreeRDP/FreeRDP">https://github.com/FreeRDP/FreeRDP</a></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xiaoyvyv.github.io/2022/02/11/14/46/bdd6a5bf8108/" data-id="cl25jvgo0000b8wv978azeun7" data-title="在 Ubuntu 上编译 FreeRDP Android 端的二进制 so 库" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/linux/" rel="tag">linux</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/02/11/14/46/0ef5600ea6fe/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          BottomSheetDialogFragment 去除白色背景，设置透明背景
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/02/11/14/46/0ae8cfb058a7/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Ubuntu 设置开机 Root 用户登录</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/" rel="tag">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apk/" rel="tag">apk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aspectjx/" rel="tag">aspectjx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html/" rel="tag">html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/" rel="tag">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvvm/" rel="tag">mvvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/" rel="tag">optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/root/" rel="tag">root</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/share-dir/" rel="tag">share-dir</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-ware/" rel="tag">vm-ware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yangtzeu/" rel="tag">yangtzeu</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/androidstudio/" style="font-size: 10px;">androidstudio</a> <a href="/tags/apk/" style="font-size: 10px;">apk</a> <a href="/tags/aspectjx/" style="font-size: 10px;">aspectjx</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/gradle/" style="font-size: 12.5px;">gradle</a> <a href="/tags/html/" style="font-size: 10px;">html</a> <a href="/tags/java/" style="font-size: 12.5px;">java</a> <a href="/tags/linux/" style="font-size: 17.5px;">linux</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 10px;">mvvm</a> <a href="/tags/optimization/" style="font-size: 10px;">optimization</a> <a href="/tags/root/" style="font-size: 10px;">root</a> <a href="/tags/share-dir/" style="font-size: 10px;">share-dir</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/vm-ware/" style="font-size: 12.5px;">vm-ware</a> <a href="/tags/yangtzeu/" style="font-size: 10px;">yangtzeu</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/04/10/11/34/7820a0788829/">Android  Html.from() 末尾大量空白去除</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/11/34/4e0f3bcf987e/">Android Apk大小优化常用方案整理</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/45/1fa028347e33/">Android 中的 MVP | MVVM 技术架构</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/11/c4ecd1f88478/">常见的设计模式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/06/22/36/796735fab11e/">Android 启动优化常用方案整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 HuaiYv Wang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

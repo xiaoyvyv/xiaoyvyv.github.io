@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Android 启动优化常用方案整理 | 布丁日常</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Android 启动优化常用的方案整理首先附上启动流程：Launcher 点击图标开始  Launcher startActivity  AMS 查找应用进程是否创建 未创建, AMS 通知从 Zygote 进程中 fork 创建出一个新的进程分配给该应用　 进程创建完毕, AMS 通过 Binder 通知应用进程 ActivityThread 调用 performLaunchActivity">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 启动优化常用方案整理">
+<meta property="og:url" content="https://xiaoyvyv.github.io/2022/03/06/22/36/796735fab11e/index.html">
+<meta property="og:site_name" content="布丁日常">
+<meta property="og:description" content="Android 启动优化常用的方案整理首先附上启动流程：Launcher 点击图标开始  Launcher startActivity  AMS 查找应用进程是否创建 未创建, AMS 通知从 Zygote 进程中 fork 创建出一个新的进程分配给该应用　 进程创建完毕, AMS 通过 Binder 通知应用进程 ActivityThread 调用 performLaunchActivity">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-06T14:36:37.000Z">
+<meta property="article:modified_time" content="2022-03-10T02:09:22.349Z">
+<meta property="article:author" content="HuaiYv Wang">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="optimization">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="布丁日常" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">布丁日常</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">布丁踩坑日常</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xiaoyvyv.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-android/Android 启动优化常用方案整理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/03/06/22/36/796735fab11e/" class="article-date">
+  <time class="dt-published" datetime="2022-03-06T14:36:37.000Z" itemprop="datePublished">2022-03-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Android 启动优化常用方案整理
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Android-启动优化常用的方案整理"><a href="#Android-启动优化常用的方案整理" class="headerlink" title="Android 启动优化常用的方案整理"></a>Android 启动优化常用的方案整理</h3><p>首先附上启动流程：Launcher 点击图标开始</p>
+<ol>
+<li><code>Launcher startActivity</code> </li>
+<li><code>AMS</code> 查找应用进程是否创建</li>
+<li>未创建, <code>AMS</code> 通知从 <code>Zygote</code> 进程中 <code>fork</code> 创建出一个新的进程分配给该应用　</li>
+<li>进程创建完毕, <code>AMS</code> 通过 <code>Binder</code> 通知应用进程</li>
+<li>ActivityThread 调用 <code>performLaunchActivity</code> </li>
+<li>Application 构造函数及 <code>attachBaseContext()</code> ,  <code>onCreate()</code> </li>
+<li><code>new Activity()</code> , 并为此 <code>Activity</code> 创建一个<code>new PhoneWindow(this)</code></li>
+<li>Activity <code>onCreate()</code> </li>
+<li>Activity <code>setContentView()</code> </li>
+<li><code>new DecorView()</code> &amp; <code>addView(contentRoot, contentParent)</code> </li>
+<li><code>onFinishInflate()</code>: 此步骤只是 <code>inflate</code> 所有的 <code>DecorView</code> 上的布局 <code>views</code>，并不可见  </li>
+<li>Activity <code>onStart()</code> </li>
+<li>Activity <code>onResume()</code> </li>
+<li><code>window.addView(mDecorView)</code> </li>
+<li>View <code>onAttachedToWindow()</code> 、 <code>onMeasure()</code> 、 <code>onSizeChanged()</code> 、 <code>onLayout()</code> 、  <code>onDraw()</code> </li>
+<li>至此步为止才把 <code>DecorView</code> 加给 <code>Window</code> , 应用首页才可见, <code>onWindowFocusChanged(true)</code> </li>
+<li>Activity <code>onPause() </code></li>
+<li>View <code>onWindowFocusChanged(false)</code>  </li>
+<li>Activity <code>onStop()</code> </li>
+<li>Activity <code>onDestroy()</code> </li>
+<li>View <code>onDetackedFromWindow()</code></li>
+</ol>
+<h4 id="1、Application-初始化方面优化"><a href="#1、Application-初始化方面优化" class="headerlink" title="1、Application 初始化方面优化"></a>1、Application 初始化方面优化</h4><p>在业务代码中，<code>Application</code> 启动时经常会初始化很多项目内的第三方库，这对 App 的启动会有很大影响，所以尽量把一些不太紧要的初始化异步执行，把必要的一些初始化才放到 <code>onCreate</code> 中执行。</p>
+<p>至于异步初始化的方法则有：<code>其他线程</code> 、<code>IntentService</code> 、<code>WorkManager </code> 、<code>MessageQueue.addIdleHandler()</code> 等等进行处理。</p>
+<blockquote>
+<p><code>IntentService</code> Android 8.0+ 由于 <code>Service</code> 后台被限制已经弃用，推荐使用 <code>JobIntentService</code> 或 <code>Jetpack</code> 组件包的 <code>WorkManager</code> 进行代替使用。</p>
+</blockquote>
+<h4 id="2、优化首次安装或冷启动时，卡在白屏的视觉效果优化"><a href="#2、优化首次安装或冷启动时，卡在白屏的视觉效果优化" class="headerlink" title="2、优化首次安装或冷启动时，卡在白屏的视觉效果优化"></a>2、优化首次安装或冷启动时，卡在白屏的视觉效果优化</h4><p>在首次安装后或冷启动时，从 Launcher 中点击图标到闪屏页，在性能一般的机器上面，会有短时间的白屏或黑屏，这样对用户而言显然是不太好的。</p>
+<p>我们可以在闪屏页配置一个背景，通常是一个和闪屏页相似的背景，然后就不会出现白屏或黑屏，而是设置的闪屏页背景，然后在显示闪屏页。</p>
+<blockquote>
+<p>闪屏页即启动的第一个 Activity，App 启动速度和闪屏页的 onCreate 方法也有关系，所以尽量不要在闪屏页的 onCreate 做太多操作。 </p>
+</blockquote>
+<p>启动页主题</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span> <span class="attr">name</span>=<span class="string">&quot;SplashTheme&quot;</span> <span class="attr">parent</span>=<span class="string">&quot;@android:style/Theme.Light.NoTitleBar.Fullscreen&quot;</span>&gt;</span><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowBackground&quot;</span>&gt;</span>@drawable/splash_bg<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">        <span class="tag">&lt;<span class="name">item</span> <span class="attr">name</span>=<span class="string">&quot;android:windowFullscreen&quot;</span>&gt;</span>true<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p><code>splash_bg</code> 可以是图片也可以是自定义的 <code>layer</code> 组合。</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">activity</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:name</span>=<span class="string">&quot;.SplashActivity&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:configChanges</span>=<span class="string">&quot;orientation|screenSize|keyboardHidden&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:screenOrientation</span>=<span class="string">&quot;portrait&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:theme</span>=<span class="string">&quot;@style/SplashTheme&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">action</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">category</span> <span class="attr">android:name</span>=<span class="string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">intent-filter</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">activity</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h4 id="3、MultiDex-OPT-优化"><a href="#3、MultiDex-OPT-优化" class="headerlink" title="3、MultiDex OPT 优化"></a>3、MultiDex OPT 优化</h4><p>Android 低版本<code>4.x及以下，SDK &lt;  21</code>的设备，采用的 <code>Java</code> 运行环境是 <code>Dalvik</code> 虚拟机。它相比于高版本，最大的问题就是在安装或者升级更新之后，首次冷启动的耗时漫长。这常常需要花费几十秒甚至几分钟，用户不得不面对一片黑屏，熬过这段时间才能正常使用 APP。这个问题的根本原因就在于，安装或者升级后首次 <code>MultiDex</code> 花费的时间过于漫长。</p>
+<h5 id="推荐使用-抖音的-BoostMultiDex-优化"><a href="#推荐使用-抖音的-BoostMultiDex-优化" class="headerlink" title="推荐使用 抖音的 BoostMultiDex 优化"></a>推荐使用 <a target="_blank" rel="noopener" href="https://github.com/bytedance/BoostMultiDex">抖音的 BoostMultiDex 优化</a></h5><ol>
+<li>利用系统隐藏函数，直接加载原始 <code>DEX</code> 字节码，避免 <code>ODEX</code> 耗时</li>
+<li>多级加载，在 <code>DEX</code> 字节码、<code>DEX</code> 文件、<code>ODEX</code> 文件中选取最合适的产物启动 APP</li>
+<li>单独进程做 <code>OPT</code> ，并实现合理的中断及恢复机制</li>
+</ol>
+<h3 id="4、利用-Redex-工具优化-Dex"><a href="#4、利用-Redex-工具优化-Dex" class="headerlink" title="4、利用 Redex 工具优化 Dex"></a>4、利用 Redex 工具优化 Dex</h3><p><code>Redex</code> 是 <code>Facebook</code> 的一个开源工具，官方的介绍是 <code>An Android Bytecode Optimizer</code> ，<code>Android 字节码优化器</code>。可以减小 <code>Android</code> <code>Apk</code> 的大小和提高 <code>App</code> 启动速度。</p>
+<p>根据官方文档的说明，主要的优化项有以下几点：</p>
+<ul>
+<li><p><strong>1、混淆和压缩</strong><br>类似 <code>Android</code> 中的 <code>proguard</code> ，将字节码中的类名、方法名等替换成简短的字符串。</p>
+</li>
+<li><p><strong>2、内联函数</strong><br><code>functionA</code> -&gt; <code>functionB</code> -&gt; <code>functionC</code> ，内联后变成 <code>functionA</code> (包含 <code>functionB</code> 代码)-&gt; <code>functionC</code> ，减少函数调用时间。</p>
+</li>
+<li><p><strong>3、删除代码</strong><br>类似于标记回收算法，从某些入口函数可以遍历标记出可以访问到的方法，最后未标记到的方法可被移除。理论比较简单，但在 <code>Android</code> 中还有反射，或者资源文件中对代码的引用等特殊情况需要考虑到。</p>
+</li>
+<li><p><strong>4、基于反馈的class分布</strong><br>也就是可以对 <code>Dex</code> 进行重组，根据使用方提供的 <code>App</code> 启动时加载的类序列配置文件调整 <code>Dex</code> 中类的顺序，把 <code>App</code> 冷启动时需要加载的类，放到 Dex前部。</p>
+</li>
+<li><p><strong>5、删除接口</strong><br>删除只有一个实现类的接口，直接使用实现类。</p>
+</li>
+<li><p><strong>6、删除 MetaData</strong><br><code>Dex</code> 文件中的一些元数据在运行中并不会使用到。所以可以用 <code>Dex</code> 中已有的字符串代替 <code>Java</code> 源文件引用，删除运行时使用不到的注解。</p>
+</li>
+</ul>
+<h4 id="5、其它优化方案"><a href="#5、其它优化方案" class="headerlink" title="5、其它优化方案"></a>5、其它优化方案</h4><ul>
+<li><p>提前加载 <code>SharedPreferences</code></p>
+<p>在 <code>Multidex</code> 之前CPU是空闲的，加载系统类是可行的，所以可充分利用这段时间加载<code>SharedPreferences</code> 。</p>
+</li>
+<li><p>启动阶段不启动子进程</p>
+<p>初始化子进程会消耗CPU资源，在启动阶段会导致主进程CPU资源紧张，导致启动阶段资源紧张初始化过慢。</p>
+</li>
+<li><p>启动阶段不启动 <code>Service</code> 、<code>ContentProvider</code></p>
+<p>在 <code>Application</code> 生命周期方法 <code>attachBaseContext</code> 方法和 <code>onCreate</code> 方法中间还会执行<code>ContentProvider</code> 生命周期方法，如果在 <code>Application</code> 初始化过程中启动了 <code>Service</code> 或者 <code>Contentprovider</code> 会执行 <code>ContentProvider</code> 生命周期方法，非常耗时。</p>
+</li>
+<li><p>提前异步类加载</p>
+<p>对启动阶段用到的类进行提前异步加载，加载方法有两种：</p>
+<ul>
+<li><code>Class.forName()</code> 只加载类本身及其静态变量的引用类。</li>
+<li><code>new 类实例</code> 可以额外加载类成员变量的引用类。</li>
+</ul>
+</li>
+<li><p>启动阶段抑制 <code>GC</code></p>
+<p>支付宝就用了该方案</p>
+</li>
+<li><p><code>CPU</code> 锁频</p>
+</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xiaoyvyv.github.io/2022/03/06/22/36/796735fab11e/" data-id="cl25jvgny00088wv92zd6cyul" data-title="Android 启动优化常用方案整理" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/optimization/" rel="tag">optimization</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/03/10/10/11/c4ecd1f88478/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          常见的设计模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/03/06/21/36/48831c504f20/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Android Studio Gradle Usage</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/" rel="tag">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apk/" rel="tag">apk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aspectjx/" rel="tag">aspectjx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html/" rel="tag">html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/" rel="tag">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvvm/" rel="tag">mvvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/" rel="tag">optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/root/" rel="tag">root</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/share-dir/" rel="tag">share-dir</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-ware/" rel="tag">vm-ware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yangtzeu/" rel="tag">yangtzeu</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/androidstudio/" style="font-size: 10px;">androidstudio</a> <a href="/tags/apk/" style="font-size: 10px;">apk</a> <a href="/tags/aspectjx/" style="font-size: 10px;">aspectjx</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/gradle/" style="font-size: 12.5px;">gradle</a> <a href="/tags/html/" style="font-size: 10px;">html</a> <a href="/tags/java/" style="font-size: 12.5px;">java</a> <a href="/tags/linux/" style="font-size: 17.5px;">linux</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 10px;">mvvm</a> <a href="/tags/optimization/" style="font-size: 10px;">optimization</a> <a href="/tags/root/" style="font-size: 10px;">root</a> <a href="/tags/share-dir/" style="font-size: 10px;">share-dir</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/vm-ware/" style="font-size: 12.5px;">vm-ware</a> <a href="/tags/yangtzeu/" style="font-size: 10px;">yangtzeu</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/04/10/11/34/7820a0788829/">Android  Html.from() 末尾大量空白去除</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/11/34/4e0f3bcf987e/">Android Apk大小优化常用方案整理</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/45/1fa028347e33/">Android 中的 MVP | MVVM 技术架构</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/11/c4ecd1f88478/">常见的设计模式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/06/22/36/796735fab11e/">Android 启动优化常用方案整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 HuaiYv Wang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>

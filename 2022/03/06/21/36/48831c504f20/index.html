@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>Android Studio Gradle Usage | 布丁日常</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Android Studio 常用的 Gradle 配置1、排除第三方库的某些依赖单条依赖排除引用的某个第三方库 123implementation(&quot;android.support.v7.widget.Toolbar&quot;) &amp;#123;	exclude group: &amp;#x27;com.android.support&amp;#x27;, module: &amp;#x27;support-a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android Studio Gradle Usage">
+<meta property="og:url" content="https://xiaoyvyv.github.io/2022/03/06/21/36/48831c504f20/index.html">
+<meta property="og:site_name" content="布丁日常">
+<meta property="og:description" content="Android Studio 常用的 Gradle 配置1、排除第三方库的某些依赖单条依赖排除引用的某个第三方库 123implementation(&quot;android.support.v7.widget.Toolbar&quot;) &amp;#123;	exclude group: &amp;#x27;com.android.support&amp;#x27;, module: &amp;#x27;support-a">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-03-06T13:36:58.000Z">
+<meta property="article:modified_time" content="2022-03-10T02:09:22.350Z">
+<meta property="article:author" content="HuaiYv Wang">
+<meta property="article:tag" content="android">
+<meta property="article:tag" content="gradle">
+<meta name="twitter:card" content="summary">
+  
+    <link rel="alternate" href="/atom.xml" title="布丁日常" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.0.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">布丁日常</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">布丁踩坑日常</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://xiaoyvyv.github.io"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-gradle/Android Studio 常用的 Gradle 配置整理" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/03/06/21/36/48831c504f20/" class="article-date">
+  <time class="dt-published" datetime="2022-03-06T13:36:58.000Z" itemprop="datePublished">2022-03-06</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      Android Studio Gradle Usage
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h3 id="Android-Studio-常用的-Gradle-配置"><a href="#Android-Studio-常用的-Gradle-配置" class="headerlink" title="Android Studio 常用的 Gradle 配置"></a>Android Studio 常用的 Gradle 配置</h3><h4 id="1、排除第三方库的某些依赖"><a href="#1、排除第三方库的某些依赖" class="headerlink" title="1、排除第三方库的某些依赖"></a>1、排除第三方库的某些依赖</h4><p>单条依赖排除引用的某个第三方库</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">implementation(<span class="string">&quot;android.support.v7.widget.Toolbar&quot;</span>) &#123;</span><br><span class="line">	exclude <span class="attr">group:</span> <span class="string">&#x27;com.android.support&#x27;</span>, <span class="attr">module:</span> <span class="string">&#x27;support-annotations&#x27;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>全局配置排除</p>
+<p>在需要排除的模块的配置文件 <code>build.gradle</code> 中，顶层插入下方配置相关的内容，在 <code>all</code> 内一行行添加需要排除的库即可，就不用在单个依赖下去排除。</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">configurations &#123;</span><br><span class="line">    all &#123;</span><br><span class="line">        <span class="comment">// 排除某个组全部内容</span></span><br><span class="line">        exclude <span class="attr">group:</span> <span class="string">&#x27;com.android.support&#x27;</span></span><br><span class="line">        <span class="comment">// 排除某个组的具体模块</span></span><br><span class="line">        exclude <span class="attr">group:</span> <span class="string">&#x27;com.android.support&#x27;</span>, <span class="attr">module:</span> <span class="string">&#x27;support-annotations&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、开启-ViewBinding"><a href="#2、开启-ViewBinding" class="headerlink" title="2、开启 ViewBinding"></a>2、开启 ViewBinding</h4><p>在 <code>Android</code> 项目的配置文件 <code>build.gradle</code> 中的 <code>android</code> 块中添加配置，重新同步即可</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">    </span><br><span class="line">    buildFeatures &#123;</span><br><span class="line">        viewBinding <span class="literal">true</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、MultiDex-定义-main-dex-中必须保留的类"><a href="#3、MultiDex-定义-main-dex-中必须保留的类" class="headerlink" title="3、MultiDex 定义 main dex 中必须保留的类"></a>3、MultiDex 定义 main dex 中必须保留的类</h4><figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        <span class="comment">//...</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义 main dex 中必须保留的类</span></span><br><span class="line">        multiDexKeepProguard file(<span class="string">&#x27;mainDexClasses.pro&#x27;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>mainDexClasses.pro</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"># 这里只是示例</span><br><span class="line">-keep <span class="keyword">public</span> <span class="keyword">class</span> * <span class="keyword">extends</span> <span class="title class_">java</span>.lang.Thread &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">com</span>.synaric.common.utils.SystemUtils &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">com</span>.synaric.common.utils.SPUtils &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">interface</span> <span class="title class_">android</span>.content.SharedPreferences &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">class</span> <span class="title class_">android</span>.os.Handler &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">class</span> <span class="title class_">com</span>.synaric.common.BaseSPKey &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">class</span> <span class="title class_">android</span>.os.Messenger &#123; *; &#125;</span><br><span class="line"></span><br><span class="line">-keep <span class="keyword">class</span> <span class="title class_">android</span>.content.Intent &#123; *; &#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://xiaoyvyv.github.io/2022/03/06/21/36/48831c504f20/" data-id="cl25jvgo2000e8wv94z0vf0mq" data-title="Android Studio Gradle Usage" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/gradle/" rel="tag">gradle</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/03/06/22/36/796735fab11e/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Android 启动优化常用方案整理
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/03/04/14/46/f79bd00f546b/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Gradle 配置请求超时时间</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/androidstudio/" rel="tag">androidstudio</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/apk/" rel="tag">apk</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/aspectjx/" rel="tag">aspectjx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/design-pattern/" rel="tag">design-pattern</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/gradle/" rel="tag">gradle</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/html/" rel="tag">html</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag">linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvp/" rel="tag">mvp</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mvvm/" rel="tag">mvvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/optimization/" rel="tag">optimization</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/root/" rel="tag">root</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/share-dir/" rel="tag">share-dir</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ubuntu/" rel="tag">ubuntu</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vm-ware/" rel="tag">vm-ware</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/yangtzeu/" rel="tag">yangtzeu</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/android/" style="font-size: 20px;">android</a> <a href="/tags/androidstudio/" style="font-size: 10px;">androidstudio</a> <a href="/tags/apk/" style="font-size: 10px;">apk</a> <a href="/tags/aspectjx/" style="font-size: 10px;">aspectjx</a> <a href="/tags/design-pattern/" style="font-size: 10px;">design-pattern</a> <a href="/tags/gradle/" style="font-size: 12.5px;">gradle</a> <a href="/tags/html/" style="font-size: 10px;">html</a> <a href="/tags/java/" style="font-size: 12.5px;">java</a> <a href="/tags/linux/" style="font-size: 17.5px;">linux</a> <a href="/tags/mvp/" style="font-size: 10px;">mvp</a> <a href="/tags/mvvm/" style="font-size: 10px;">mvvm</a> <a href="/tags/optimization/" style="font-size: 10px;">optimization</a> <a href="/tags/root/" style="font-size: 10px;">root</a> <a href="/tags/share-dir/" style="font-size: 10px;">share-dir</a> <a href="/tags/ubuntu/" style="font-size: 15px;">ubuntu</a> <a href="/tags/vm-ware/" style="font-size: 12.5px;">vm-ware</a> <a href="/tags/yangtzeu/" style="font-size: 10px;">yangtzeu</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/04/">April 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/03/">March 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/02/">February 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/12/">December 2021</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/04/10/11/34/7820a0788829/">Android  Html.from() 末尾大量空白去除</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/11/34/4e0f3bcf987e/">Android Apk大小优化常用方案整理</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/45/1fa028347e33/">Android 中的 MVP | MVVM 技术架构</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/10/10/11/c4ecd1f88478/">常见的设计模式</a>
+          </li>
+        
+          <li>
+            <a href="/2022/03/06/22/36/796735fab11e/">Android 启动优化常用方案整理</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 HuaiYv Wang<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
